@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +13,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->tinyInteger('role')->default(UserRole::RESIDENT->value);
+            $table->uuid('unit_id')->nullable();
+            $table->foreign('unit_id')->references('id')->on('units')->nullOnDelete();
+            $table->string('phone')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
